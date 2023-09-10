@@ -1,7 +1,7 @@
 /* eslint-disable react/no-danger-with-children */
 import React, {useEffect, useState} from 'react'
 import { useLocation } from 'react-router-dom';
-import { Divider, Tag, Typography, Tooltip, Button } from 'antd';
+import { Divider, message, Input, Typography, Tooltip, Button } from 'antd';
 import  "./question-paper.css"
 import { DownloadOutlined } from '@ant-design/icons';
 import baseURL from '../baseURL'
@@ -12,50 +12,9 @@ import html2pdf from 'html2pdf.js';
 
 const { Text } = Typography;
 export default function QuestionPaper() {
-  // const location = useLocation();
-  // const data = location.state;
-  // console.log(data);
-  // const questions = data.matchedQuestions
-
-  // const handleDownloadPDF = () => {
-  //   const printableHeight = 277; // Maximum height that can fit on a single A4 page (in mm)
-
-  //   const element = document.getElementById('a4'); // Element containing the questions
-  //   const options = {
-  //       margin: 10,
-  //       filename: 'question_paper.pdf',
-  //       image: { type: 'jpeg', quality: 0.98 }, // Image options
-  //       html2canvas: { scale: 2 }, // Html2canvas options
-  //       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // jsPDF options
-  //   };
-
-  //   const divsPerPage = Math.ceil(element.clientHeight / printableHeight);
-  //   const pageCount = Math.ceil(element.children.length / divsPerPage);
-
-  //   const pages = [];
-  //   for (let i = 0; i < pageCount; i++) {
-  //       const start = i * divsPerPage;
-  //       const end = (i + 1) * divsPerPage;
-  //       const pageDivs = Array.from(element.children).slice(start, end);
-  //       const pageContent = document.createElement('div');
-  //       pageDivs.forEach(div => {
-  //           pageContent.appendChild(div.cloneNode(true));
-  //       });
-  //       pages.push(pageContent);
-  //   }
-
-  //   const pdf = html2pdf().set(options);
-
-  //   pages.forEach((page, index) => {
-  //       pdf.from(page).toPdf().output('datauristring').then((dataUri) => {
-  //           if (index === 0) {
-  //               pdf.output('dataurlnewwindow');
-  //           }
-  //       });
-  //   });
-  // };
-  
-
+ 
+  const [pageNo, setPageNo] = useState(0);
+  const [questionNumber, setQuestionNumber] = useState('');
   const [equationValue, setEquationValue] = useState(""); // State to store equation value
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const location = useLocation();
@@ -79,6 +38,18 @@ export default function QuestionPaper() {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  useEffect(()=>{
+    const printableHeight = 277
+    const element = document.getElementById('a4')
+    const divHeightInPixels = element.offsetHeight
+    const page = Math.ceil(divHeightInPixels / 848.8)
+    setPageNo(page)
+  },[])
+
+
+
+
 
   useEffect(() => {
     const fetchImageData = async () => {
@@ -129,7 +100,6 @@ export default function QuestionPaper() {
 
     const divsPerPage = Math.ceil(element.clientHeight / printableHeight);
     const pageCount = Math.ceil(element.children.length / divsPerPage);
-
     const pages = [];
     for (let i = 0; i < pageCount; i++) {
       const start = i * divsPerPage;
@@ -153,10 +123,49 @@ export default function QuestionPaper() {
     });
   };
 
+
+
+    
+  
+    const adjustMargin = (marginChange) => {
+
+      const questionElement = document.getElementById(`question-number-${questionNumber}`);
+      
+      if (questionElement) {
+        const currentMargin = parseInt(getComputedStyle(questionElement).marginTop, 10) || 0;
+        const newMargin = currentMargin + marginChange;
+        questionElement.style.transition = 'margin-top 0.2s';
+        questionElement.style.marginTop = `${newMargin}px`;
+      } else {
+        // Handle the case where the element with the given question number doesn't exist
+        message.error(`Question Number ${questionNumber} not found.`)
+      }
+    }
+
+
   return (
     <div className="Question-paper-section">
-      <div id='a4' className="question-paper">
 
+      {/* <div className='background-box'>
+      {Array.from({ length: pageNo }, (_, index) => (
+        <div key={index} className={`page-color ${index % 2 === 0 ? 'even-page' : 'odd-page'}`}></div>
+      ))}
+      </div> */}
+
+      <div className="margin-input-section">
+
+        <Button onClick={() => adjustMargin(-10)}>-</Button>
+        <Input 
+        type='number'
+        id="margin-input" 
+        placeholder='QNo'
+        value={questionNumber}
+        onChange={(e) => setQuestionNumber(e.target.value)} 
+        />
+        <Button onClick={() => adjustMargin(10)}>+</Button>
+      </div>
+
+      <div id='a4' className="question-paper">
         <div className="first-page">
           <div className="parent">
             <div className="logo">
@@ -260,7 +269,8 @@ export default function QuestionPaper() {
         <div style={{margin:"100px 0px",marginTop:"120px"}}></div>
 
         {questions.map((question, index) => (
-          <div className='question-paper-math' key={index}>
+          <div className="question-paper-math" key={index}>
+          <div id={`question-number-${index+1}`} ></div>
           <Divider className='line'/>
           <div contentEditable className='qusetion-head'>
           <Text className='antd-font'>Question {index + 1}</Text>
@@ -280,21 +290,8 @@ export default function QuestionPaper() {
             />
           )}
 
-          {/* {question.tableData && (
-          <Table 
-            className='question-table'
-            rowKey="id"
-            dataSource={JSON.parse(question.tableData)}
-            columns={[
-              { dataIndex: 'col0', key: 'col0' },
-              { dataIndex: 'col1', key: 'col1' },
-            ]}
-            pagination={false}
-            />
-          )} */}
-
-
             {question.tableData && (
+              
               <table contentEditable className='question-table'>
                 <tbody>
                   {JSON.parse(question.tableData).map((row, rowIndex) => (
@@ -315,14 +312,16 @@ export default function QuestionPaper() {
           </div>
 
           <Divider className='line'/>
+          
 
           {[...Array(question.space)].map((_, spaceIndex) => (
             <Divider key={spaceIndex} dashed />
           ))}
 
+
+
           </div>
         ))}
-
 
       </div>
 
