@@ -169,7 +169,7 @@ export default function QuestionPaper() {
         <div className="first-page">
           <div className="parent">
             <div className="logo">
-              <img className="logo-img" src="/logo.png" alt="" />
+              <img className="logo-img" src="/logo.jpg" alt="" />
             </div>
             <div className="university" contentEditable>
               University of Technology and Applied Sciences - Muscat
