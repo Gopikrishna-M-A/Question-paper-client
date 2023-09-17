@@ -38,8 +38,15 @@ html {
     font-weight: bolder;
 }
 
-.nav__brand {
+/* .nav__brand {
     width: 30px !important;
+} */
+.nav__brand {
+    font-family: 'Fredoka', sans-serif ;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 25px;
+    line-height: 31px;
 }
 .logo-img{
     width: 100%;

@@ -69,7 +69,8 @@ const Navbar = ({ user, setUser}) => {
         <MenuOutlined className="nav__collapser" onClick={toggleNav} />
         <div className="nav-content-wrapper">
         <Link onClick={closeNav} className="nav__brand" to="/">
-          <img className="logo-img" src="/logo.png" alt="" />
+          {/* <img className="logo-img" src="/logo.png" alt="" /> */}
+          Paper Genie
         </Link>
         {user ? (
           <Dropdown.Button
