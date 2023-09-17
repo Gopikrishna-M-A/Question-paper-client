@@ -9,6 +9,9 @@ html {
     font-size: 14px;
     font-family: "Inter", sans-serif;
 }
+.font{
+    font-family: "Inter", sans-serif !important;
+} 
 
 /* Non-navbar specific stuff moved to bottom of file */
 .nav {
@@ -18,29 +21,28 @@ html {
     align-items: flex-start;
     justify-content: center;
     padding: 20px;
-    border-bottom: 1px solid #E2E2E2;
+    /* border-bottom: 1px solid #E2E2E2; */
 }
 
 .nav-left-sec{
-    width: fit-content;
+    z-index: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
+    width: 100%;
 }
 
 .nav__collapser {
     font-size: 23px;
     font-weight: bolder;
-
 }
 
 .nav__brand {
-    font-family: 'Righteous';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 25px;
-    line-height: 31px;
+    width: 30px !important;
+}
+.logo-img{
+    width: 100%;
 }
 
 .nav__collapsable {
@@ -60,12 +62,73 @@ html {
 .nav--expanded .nav__collapsable {
     max-height: 500px;
     /* This is what shows the content */
-    margin-top: 1rem;
+    /* margin-top: 1rem; */
     padding: 2rem 0;
+    z-index: 1;
+}
+
+
+.profile-small{
+    display: none;
+}
+
+.nav-content-wrapper{
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: space-between;
+}
+.nav-content-wrapper *{
+    width: fit-content;
+}
+
+
+
+.nav-left-sec .ant-btn-compact-first-item{
+    display: none;
+}
+
+
+.nav-left-sec .ant-btn-compact-last-item{
+    border-radius: 6px !important;
+}
+
+
+.link-item{
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 5px;
+    color: grey;
+    transition: .2s all ease-in-out;
+}
+
+.link-item:hover{
+    color: black;
+}
+
+
+
+.nav__collapsable .ant-space-compact-block {
+    width: fit-content;
+}
+
+@media (width < 780px){
+    .profile-small{
+        display: inline;
+    }
+    .profile-big{
+        display: none;
+    }
 }
 
 /* Desktop mode styles */
-@media (min-width: 700px) {
+@media (min-width: 780px) {
+
+    .nav-left-sec{
+        width: fit-content;
+
+    }
     .nav {
         padding-left: 40px;
         padding-right: 40px;

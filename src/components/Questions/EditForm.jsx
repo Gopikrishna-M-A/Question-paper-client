@@ -3,7 +3,7 @@ import { Modal, Form, Button, Input, Select, InputNumber } from 'antd';
 import EquationEditor from 'equation-editor-react';
 const { TextArea } = Input;
 
-const EditForm = ({ visible, onCancel, onEdit, subject }) => {
+const EditForm = ({ visible, onCancel, onEdit, subject, qObj }) => {
   const [question, setQuestion] = useState()
   const [editedValues, setEditedValues] = useState({});
   useEffect(() => {
@@ -53,7 +53,7 @@ const EditForm = ({ visible, onCancel, onEdit, subject }) => {
                     autoOperatorNames="sin cos tan"
                   />
                     {!question && (
-                    <div className="equation-editor-placeholder">Type your equation here...</div>
+                    <div className="equation-editor-placeholder">{qObj.question}</div>
                   )}
                 </div>
                 </Form.Item>
@@ -63,7 +63,7 @@ const EditForm = ({ visible, onCancel, onEdit, subject }) => {
                 name="question"
                 >
                   <TextArea rows={4} 
-                  placeholder='Type your Question here...'
+                  placeholder={qObj.question}
                   onChange={(e) => setQuestion(e.target.value)}
                   />
                 </Form.Item>
@@ -72,7 +72,7 @@ const EditForm = ({ visible, onCancel, onEdit, subject }) => {
 
             <Form.Item label="Difficulty" name="Dlevel" hasFeedback>
             <Select
-                placeholder="Difficulty level"
+                placeholder={qObj.Dlevel}
                 onChange={(value) =>
                 setEditedValues({ ...editedValues, Dlevel: value })
                 }
@@ -85,7 +85,7 @@ const EditForm = ({ visible, onCancel, onEdit, subject }) => {
 
             <Form.Item label="Cognitive" name="Clevel" hasFeedback>
             <Select
-                placeholder="Cognitive level"
+                placeholder={qObj.Clevel}
                 onChange={(value) =>
                 setEditedValues({ ...editedValues, Clevel: value })
                 }
@@ -100,7 +100,7 @@ const EditForm = ({ visible, onCancel, onEdit, subject }) => {
 
             <Form.Item label="Mark" name="mark" hasFeedback>
             <InputNumber
-                placeholder="Mark"
+                placeholder={qObj.mark}
                 onChange={(value) =>
                 setEditedValues({ ...editedValues, mark: value })
                 }
@@ -109,7 +109,7 @@ const EditForm = ({ visible, onCancel, onEdit, subject }) => {
 
             <Form.Item label="Section" name="section" hasFeedback>
             <InputNumber
-                placeholder="Section"
+                placeholder={qObj.section}
                 onChange={(value) =>
                 setEditedValues({ ...editedValues, section: value })
                 }
@@ -118,7 +118,7 @@ const EditForm = ({ visible, onCancel, onEdit, subject }) => {
 
             <Form.Item label="Space" name="space" hasFeedback>
             <InputNumber
-                placeholder="Space"
+                placeholder={qObj.space}
                 onChange={(value) =>
                 setEditedValues({ ...editedValues, space: value })
                 }

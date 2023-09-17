@@ -2,13 +2,13 @@ import SectionHead from '../Common/SectionHead'
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
-import { ConfigProvider, Button, message, Typography, Form, Select } from 'antd';
+import { Button, message, Typography, Form, Select, InputNumber } from 'antd';
 import { CloudDownloadOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import baseURL from '../baseURL'
 
 const { Text } = Typography;
 
-export default function GeneratePaper() {
+export default function GeneratePaper({user}) {
 
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -29,7 +29,10 @@ export default function GeneratePaper() {
 
   const fetchSubTopics = async (selectedSubject) => {
     try {
-      const response = await fetch(`${baseURL}/questions/subject/${selectedSubject}`);
+      const response = await fetch(`${baseURL}/questions/subject/${selectedSubject}`,{
+        method: 'GET',
+        credentials: 'include'
+      });
       if (response.ok) {
         const data = await response.json();
         const sec = new Set();
@@ -54,9 +57,9 @@ export default function GeneratePaper() {
     setCriteria(criteria.filter((criterion) => criterion.key !== criteriaKey));
   };
 
-  const handleSuccess = (msg) => {
-    message.success(msg);
-  };
+  // const handleSuccess = (msg) => {
+  //   message.success(msg);
+  // };
   
   const handleError = (msg) => {
     message.error(msg);
@@ -80,6 +83,7 @@ export default function GeneratePaper() {
     try {
       const response = await fetch(`${baseURL}/questions/filter`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -94,15 +98,17 @@ export default function GeneratePaper() {
         }else{
           navigate('/question-paper',{ state: data });
         }
-        setLoading(false);
 
       } else {
-        handleError(response.statusText)
-        console.error('Error:', response.statusText);
-        setLoading(false);
+        const errorResponse = await response.json(); // Parse the error response JSON
+        const errorMessage = errorResponse.message || "An error occurred";
+        handleError(errorMessage)
       }
     } catch (error) {
+      handleError(error)
       console.error('Error sending request:', error);
+    }finally{
+      setLoading(false);
     }
   };
   
@@ -110,17 +116,7 @@ export default function GeneratePaper() {
 
 
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: "#242527",
-          colorBgContainer: "#ffffff",
-        },
-      }}
-    >
-
-
-      <div className='Generate-paper-page'>
+      <div style={{marginBottom:"50px"}} className='Generate-paper-page'>
 
         <SectionHead
           icon={<CloudDownloadOutlined />}
@@ -135,9 +131,11 @@ export default function GeneratePaper() {
         <Select 
         placeholder="Subject"
         onChange={(value) => setSubject(value)}>
-             <Select.Option value="Maths">Maths</Select.Option>
-             <Select.Option value="Science">Science</Select.Option>
-             <Select.Option value="English">English</Select.Option>
+              {user && user.subjects && Object.keys(user.subjects).map((subjectName) => (
+                <Select.Option key={subjectName} value={subjectName}>
+                  {subjectName}
+                </Select.Option>
+              ))}
          </Select>
 
         
@@ -156,14 +154,11 @@ export default function GeneratePaper() {
                      message: '',
                   },
                  ]}>
-                 <Select 
+                 <InputNumber 
+                 style={{width:"100%"}}
                  placeholder="Mark"
-                 onChange={(value) => handleCriteriaChange(criterion.key, "mark", value)}>
-                      <Select.Option value="1">1</Select.Option>
-                      <Select.Option value="2">2</Select.Option>
-                      <Select.Option value="3">3</Select.Option>
-                      <Select.Option value="4">4</Select.Option>
-                 </Select>
+                 onChange={(value) => handleCriteriaChange(criterion.key, "mark", value)}/>
+
                  </Form.Item>
 
                  <Form.Item 
@@ -225,7 +220,7 @@ export default function GeneratePaper() {
                  </Select>
                  </Form.Item>
               
-              <Button onClick={() => removeCriteria(criterion.key)} type="text" danger>
+              <Button onClick={() => removeCriteria(criterion.key)} type='primary' danger>
                 <CloseOutlined />
               </Button>
             </div>
@@ -234,6 +229,5 @@ export default function GeneratePaper() {
           <Button className='Generate-btn' type="primary" size='large' onClick={submitForm} htmlType='submit' loading={loading}>GENERATE PAPER</Button>
         </Form>
       </div>
-    </ConfigProvider>
   );
 }

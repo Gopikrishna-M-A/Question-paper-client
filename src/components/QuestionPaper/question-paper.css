@@ -318,17 +318,7 @@
   }
 
 
-@media (width < 576px){
-    .first-page{
-        font-size: 10px;
-    }
-    .marks > * {
-        padding: 0;
-    }
-    .student-sec .sec{
-        height: 75px;
-    }
-}
+
 
 
 
@@ -357,6 +347,7 @@
 .Question-paper-section{
   position: relative;
   overflow: hidden;
+  margin-bottom: 30px;
 }
 /* .page-color:first-child{
   visibility: hidden;
@@ -375,4 +366,20 @@
   top: 0px;
   left: 0px;
   z-index: -1;
+}
+
+
+@media (width < 576px){
+  .first-page{
+      font-size: 10px;
+  }
+  .marks > * {
+      padding: 0;
+  }
+  .student-sec .sec{
+      height: 75px;
+  }
+  .margin-input-section{
+    display: none;
+  }
 }
